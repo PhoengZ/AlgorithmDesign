@@ -14,7 +14,7 @@ void my_recur(vector<vector<int>> & graph, vector<vector<int>>&sol,vector<bool> 
             if (!visit[i] && graph[row][i] != 0){
                 visit[i] = true;
                 check.push_back(i);
-                if (count+1 == graph.size()+1 && check.back() == check.front())sol.push_back(check);
+                //if (count+1 == graph.size()+1 && check.back() == check.front())sol.push_back(check);
                 my_recur(graph,sol,visit,check,count+1);
                 check.pop_back();
                 visit[i] = false;
