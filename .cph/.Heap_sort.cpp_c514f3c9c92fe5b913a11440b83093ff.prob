@@ -1,0 +1,1 @@
+{"name":"Local: Heap_sort","url":"c:\\Users\\USER\\Desktop\\VScode\\AlgorithmDesign\\Heap_sort.cpp","tests":[{"id":1736911450468,"input":"20\n42 87 15 39 56 23 74 91 8 60 19 35 49 66 81 12 53 29 70 95","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\USER\\Desktop\\VScode\\AlgorithmDesign\\Heap_sort.cpp","group":"local","local":true}
