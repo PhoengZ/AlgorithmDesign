@@ -1,82 +1,39 @@
 #include <iostream>
 #include <set>
 #include <vector>
+#include<map>
 #include <climits>
 
 using namespace std;
-/*
-void cover(vector<vector<bool>> & day_off, int n, int m, int count, int day, vector<int> & used,int & MIN){
-    if (day > n){
-        MIN = min(MIN, count);
+
+void cover(int target, int now, int day ,int t_day, vector<vector<bool>> & canuse, int & MIN, set<int> & sel,vector<pair<int,set<int>>> & mp){
+    if (MIN != 21)return;
+    if (now > target && day != t_day){
+        mp.push_back({day,sel});
         return;
     }
-    if (count >= MIN)return;
-    else{
-        for (int i = 0;i<m;i++){
-            if (day_off[i][day-1]){
-                if (used[i] == 0){
-                    used[i]++;
-                    cover(day_off,n,m,count+1,day+1,used,MIN);
-                    used[i]--;
-                }else{
-                    used[i]++;
-                    cover(day_off,n,m,count,day+1,used,MIN);
-                    used[i]--;
-                }
-            }
-        }
-    }
-}
-
-    
-
-int main(){
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-    int n,m;
-    cin >> n >> m;
-    int MIN = 20;
-    vector<int> used(m);
-    vector<vector<bool>> day_off(m);
-    for (int i =0;i<m;i++){
-        vector<bool> vp(n);
-        day_off[i] = vp;
-    }
-    for (int i =0;i<m;i++){
-        int k;
-        cin>>k;
-        for (int j = 0;j<k;j++){
-            int off;
-            cin>> off;
-            day_off[i][off-1] = true;
-        }
-    }
-    cover(day_off,n,m,0,1,used,MIN);
-    cout << MIN;
-    return 0;
-}
-First solutions: score 50 */
-
-void cover(int target, int now, int day ,int t_day, vector<int> & use_coub, vector<vector<bool>> & canuse, int & MIN){
-    if (MIN != 21)return;
-    if (now > target && day != t_day-1)return;
-    if (day == t_day && now <= target){
+    if (day == t_day && now == target){
         MIN = now;
         return ;
     }
-    for (int i =0;i<use_coub.size();i++){
-        if (canuse[i][day]){
-            if (use_coub[i] == 0){
-                use_coub[i]++;
-                cover(target,now+1,day+1,t_day,use_coub,canuse,MIN);
-                use_coub[i]--;
-            }else{
-                use_coub[i]++;
-                cover(target,now,day+1,t_day,use_coub,canuse,MIN);
-                use_coub[i]--;
+    bool found = false;
+    for (auto & e:sel){
+        if (canuse[e][day]){
+            cover(target,now,day+1,t_day,canuse,MIN,sel,mp);
+            found = true;
+            return;
+        }
+    }
+    if (!found){
+        for (int i =0;i<canuse.size();i++){
+            if (canuse[i][day] && !sel.count(i)){
+                sel.insert(i);
+                cover(target,now+1,day+1,t_day,canuse,MIN,sel,mp);
+                sel.erase(i);
             }
         }
     }
+    
 }
 
 int main(){
@@ -84,7 +41,6 @@ int main(){
     int n,m;
     cin >> n >> m;
     vector<vector<bool>> vp(m);
-    vector<int> check(m);
     for (int i = 0;i<m;i++){
         vector<bool> c(n);
         int k;
@@ -97,9 +53,24 @@ int main(){
         }
     }
     int target = 1;
+    set<int> s;
+    int d = 0;
+    int now = 0;
+    vector<pair<int,set<int>>> temp;
+    cover(target,now,d,n,vp,MIN,s,temp);
     for (int i =0;i<m;i++){
-        cover(target,0,0,n,check,vp,MIN);
+        vector<pair<int,set<int>>> mp;
+        for (auto & e:temp){
+            now = e.second.size();
+            d = e.first;
+            s = e.second;
+            cover(target,now,d,n,vp,MIN,s,mp);
+            if (MIN!=21)break;
+        }
         if (MIN != 21)break;
+        temp = mp;
+        set<int> p;
+        
         target++;
     }
     cout << MIN;
