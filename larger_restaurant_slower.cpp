@@ -43,9 +43,9 @@ int main(){
     }
 
     for (int i = 0;i<a;i++){
-        int idx;
+        long long idx;
         cin >>idx;
-        int time = LCM*(idx/count);
+        long long time = LCM*(idx/count);
         if (idx%count == 0) time+= up[idx%count];
         else time += up[(idx%count)-1];
         cout << time <<endl;

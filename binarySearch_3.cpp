@@ -15,15 +15,16 @@ int main(){
         bool found = false;
         while (left < right){
             int mid = left + (right - left)/2;
-            if (v[mid] == sol){
-                left = mid;
-                right = mid;
-                while (left + 1 < v.size() && v[left] == v[left+1])left++;
-                break;
-            }
-            if (v[mid] > sol)right = mid-1;
+            //if (v[mid] == sol){
+            //    left = mid;
+            //    right = mid;
+            //    while (left + 1 < v.size() && v[left] == v[left+1])left++;
+            //    break;
+            //}
+            if (v[mid] >= sol)right = mid;
             else left = mid+1;
         }
+        if (v[left] == sol)while (left+1 < n && v[left] == v[left+1])left++;
         if (v[left] > sol){
             if (left == 0)cout << -1 <<endl;
             else{
