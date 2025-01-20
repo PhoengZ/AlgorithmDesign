@@ -1,0 +1,1 @@
+{"name":"Local: merg_sort","url":"c:\\Users\\USER\\Desktop\\VScode\\AlgorithmDesign\\merg_sort.cpp","tests":[{"id":1737371579706,"input":"20\n35 78 12 57 89 23 41 66 90 7 18 54 83 29 99 3 22 48 64 71","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\USER\\Desktop\\VScode\\AlgorithmDesign\\merg_sort.cpp","group":"local","local":true}
