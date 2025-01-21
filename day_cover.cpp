@@ -1,78 +1,48 @@
 #include <iostream>
-#include <set>
 #include <vector>
-#include<map>
 #include <climits>
-
 using namespace std;
-
-void cover(int target, int now, int day ,int t_day, vector<vector<bool>> & canuse, int & MIN, set<int> & sel,vector<pair<int,set<int>>> & mp){
-    if (MIN != 21)return;
-    if (now > target && day != t_day){
-        mp.push_back({day,sel});
+int m;
+void my_recur(vector<vector<int>>&cover, vector<int>&day, int target, int & now, int start,int & MIN, int count){
+    if (target == now){
+        MIN = min(MIN,count);
         return;
     }
-    if (day == t_day && now == target){
-        MIN = now;
-        return ;
+    if (start >=m)return;
+    if (count >= MIN)return;
+    for (auto & e:cover[start]){
+        if (day[e-1] == 0)now++;
+        day[e-1]++;
     }
-    bool found = false;
-    for (auto & e:sel){
-        if (canuse[e][day]){
-            cover(target,now,day+1,t_day,canuse,MIN,sel,mp);
-            found = true;
-            return;
-        }
+    my_recur(cover,day,target,now,start+1,MIN,count+1);
+    for (auto & e:cover[start]){
+        day[e-1]--;
+        if (day[e-1] == 0)now--;
     }
-    if (!found){
-        for (int i =0;i<canuse.size();i++){
-            if (canuse[i][day] && !sel.count(i)){
-                sel.insert(i);
-                cover(target,now+1,day+1,t_day,canuse,MIN,sel,mp);
-                sel.erase(i);
-            }
-        }
-    }
-    
+    my_recur(cover,day,target,now,start+1,MIN,count);
 }
 
 int main(){
-    int MIN = 21;
-    int n,m;
-    cin >> n >> m;
-    vector<vector<bool>> vp(m);
-    for (int i = 0;i<m;i++){
-        vector<bool> c(n);
-        int k;
-        cin>>k;
-        vp[i] = c;
-        for (int j =0;j<k;j++){
-            int idx;
-            cin>> idx;
-            vp[i][idx-1] = true;
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    int day;
+    cin >> day >> m;
+    vector<vector<int>> v(m);
+    for (int i= 0;i< m;i++){
+        int idx;
+        cin >> idx;
+        vector<int> vp(idx);
+        for (int j = 0;j<idx;j++){
+            int t;
+            cin >> t;
+            vp[j] = t;
         }
+        v[i] = vp;
     }
-    int target = 1;
-    set<int> s;
-    int d = 0;
+    vector<int> d(day);
+    int MIN = INT_MAX;
     int now = 0;
-    vector<pair<int,set<int>>> temp;
-    cover(target,now,d,n,vp,MIN,s,temp);
-    for (int i =0;i<m;i++){
-        vector<pair<int,set<int>>> mp;
-        for (auto & e:temp){
-            now = e.second.size();
-            d = e.first;
-            s = e.second;
-            cover(target,now,d,n,vp,MIN,s,mp);
-            if (MIN!=21)break;
-        }
-        if (MIN != 21)break;
-        temp = mp;
-        set<int> p;
-        
-        target++;
-    }
+    my_recur(v,d,day,now,0,MIN,0);
     cout << MIN;
     return 0;
 }
