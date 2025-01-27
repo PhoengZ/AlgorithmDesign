@@ -17,8 +17,35 @@ int main(){
     for (int i =0;i<m;i++){
         long long start,target;
         cin >> start >> target;
-        start++;
-        
+        int left = 1;
+        int right = n;
+        long long total = 0;
+        if (target <= k){
+            cout << 0 << endl;
+            continue;
+        }
+        if (target >= (right-start + 1)*k + sum[right]-sum[start]){
+            cout << sum[right] - sum[start] <<endl;
+            continue;
+        }
+        int count = 0;
+        while (left < right){
+            int mid = left + (right - left)/2;
+            total = sum[mid] - sum[start] + (mid-start+1)*k;
+            if (total == target)count = sum[mid] - sum[start];
+            if (total >= target)right= mid;
+            else{
+                count = sum[mid] - sum[start];
+                left = mid+1;
+            }
+        }
+        if (left == right){
+            total = sum[right] - sum[start] + (right-start)*k;
+            if (total <= target){
+                count = sum[right] - sum[start];
+            }
+        }
+        cout << count << endl;
     }
     return 0;
 }
