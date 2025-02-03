@@ -1,33 +1,49 @@
 #include <iostream>
 #include <vector>
-
+#include <algorithm>
+#include <map>
 using namespace std;
 
-bool c(vector<int>&v, long long len, int left, int right){
-    if (len == 2)return v[left] == 0 && v[right] == 1 ? true:false;
-    int mid = left + (right-left)/2;
-    bool normal_l = c(v,len/2,left,mid);
-    bool r = c(v,len/2,mid+1,right);
-    int idx = left;
-    vector<int>vp(right);
-    for (int i = mid;i>=left;i--)vp[idx++] = v[i];
-    bool up_l = c(vp,len/2,left,mid);
-    return (normal_l && r) || (up_l && r);
-} 
+map<string,bool>u;
+
+bool f(string now){
+    if (now.length() == 2){
+        return now[0] == '0' && now[1] == '1';
+    }
+    if (u.count(now))return u[now];
+    int mid = now.length()/2;
+    string left,right,r_left;
+    for (int i = 0;i<now.length();i++){
+        if (i < mid){
+            left+=now[i];
+            r_left += now[mid-1-i];
+        }else right += now[i];
+    }
+    bool a = f(left);
+    bool b = f(right);
+    bool c = f(r_left);
+    if (a&&b || c&&b){
+        u[now] = true;
+        return true;
+    }
+    u[now] = false;
+    return false;
+}
 
 int main(){
-    int n,m;
-    cin >> n >> m;
-    long long length = 1LL << m;
-    for (int i =0;i<n;i++){
-        vector<int> v(length);
-        for (long long j = 0;j<length;j++){
-            cin >>v[j];
+    ios_base::sync_with_stdio(false);cin.tie(0);
+    int n,k;
+    cin >> n >> k;
+    int size = 1 << k;
+    for (int i = 0;i<n;i++){
+        string v;
+        for (int i =0;i<size;i++){
+            char a;
+            cin >> a;
+            v+=a;
         }
-
-        bool check = c(v,length,0,length-1);
-        if (check)cout << "yes"<<endl;
+        bool check = f(v);
+        if (check)cout << "yes" <<endl;
         else cout << "no" <<endl;
     }
-    return 0;
 }
