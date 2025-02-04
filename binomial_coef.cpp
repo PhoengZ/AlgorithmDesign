@@ -2,46 +2,64 @@
 #include <vector>
 using namespace std;
 
-int m_suffix(vector<int>&v, vector<bool>&t, vector<int>&table, int stop){
-    if (stop == 1)return v[1];
-    if (t[stop])return table[stop];
-    int p = m_suffix(v,t,table,stop-1);
-    if (p + v[stop] > v[stop]){
-        table[stop]= p+v[stop];
-    }else{
-        table[stop]= v[stop];
-    }
-    t[stop] = true;
-    return table[stop];
-}
 
-int recur(vector<int>&v, vector<bool>&t, vector<int>&table, int stop){
-    if (stop == 1)return v[1];
-    int a = v[stop];
-    int b = recur(v,t,table,stop-1);
-    int c = m_suffix(v,t,table,stop-1)+v[stop];
-    return max(a,max(b,c));
-}
 
 int main(){
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
-    int n;
-    cin >> n;
-    vector<int>v(n+1);
-    vector<bool> done_1(n+1);
-    vector<int>table_1(n+1);
-    int total = 0;
-    for (int i = 1;i<=n;i++){
-        cin >> v[i];
-        total +=v[i];
+    int n,k;
+    cin >> n >> k;
+    vector<int> v(n+1);
+    for (int i =1;i<=n;i++)cin >> v[i];
+    int now,ans,now_1;
+    now = ans = now_1 = v[1];
+    int count = 1;
+    int count_1 = 1;
+    bool c = false;
+    for (int i = 2;i<=n;i++){
+        if (count_1 == k && count != k){
+            count_1 = 1;
+            now_1 = v[i];
+            now = max(now+v[i],v[i]);
+            if (v[i] == now)count = 1;
+            else count++;
+        }
+        else if (count == k && count_1 != k){
+            count = 1;
+            now = v[i];
+            if (c){
+                now_1 = v[i];
+                count_1 = 1;
+                c= false;
+            }else{
+                now_1 = max(now_1 + v[i],v[i]);
+                count_1++;
+            }
+            if (v[i] < 0)c = true;
+        }else if (count_1 == k && count == k){
+            count_1 = 1;
+            now_1 = v[i];
+            count = 1;
+            now = v[i];
+        }
+        else{
+            now = max(now+v[i],v[i]);
+            if (c){
+                now_1 = v[i];
+                count_1 = 1;
+                c= false;
+            }else{
+                now_1 = max(now_1 + v[i],v[i]);
+                count_1++;
+            }
+            if (v[i] < 0)c = true;
+            if (v[i] == now)count = 1;
+            else count++;
+        }
+        now = max(now,now_1);
+        ans = max(now,ans);
     }
-    int a = recur(v,done_1,table_1,n);
-    for (int i = 1;i<=n;i++){v[i] = (-1) * v[i];done_1[i] = false;}
-    int b = recur(v,done_1,table_1,n);
-    total+=b;
-    if (total == 0)cout << a;
-    else cout << max(a,total);
+    cout << ans;
     return 0;
 }
 
