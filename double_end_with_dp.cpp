@@ -1,6 +1,6 @@
 #include <iostream>
 #include <vector>
-#include <map>
+#include <unordered_map>
 using namespace std;
 
 
@@ -9,7 +9,7 @@ int main(){
     cin >> n;
     vector<int>v(n+1);
     vector<int>p(n+1);
-    map<int,pair<int,int>> m;
+    unordered_map<int,pair<int,int>> m;
     for (int i = 1;i<=n;i++){
         cin >> v[i];
         p[i] += p[i-1] + v[i];
