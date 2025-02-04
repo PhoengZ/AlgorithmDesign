@@ -1,48 +1,56 @@
-#include <iostream>
-#include <vector>
-#include <climits>
+//#include <iostream>
+//#include <vector>
+//#include <algorithm>
+//#include <climits>
+#include <bits/stdc++.h>
 using namespace std;
-int m;
-void my_recur(vector<vector<int>>&cover, vector<int>&day, int target, int & now, int start,int & MIN, int count){
-    if (target == now){
-        MIN = min(MIN,count);
+
+int n, m;                  
+vector<vector<int>> s;  
+vector<int> cv;        
+int mn = 21;        
+
+void fm(int index, int cnt, int c) {
+    if (cnt== n) {
+        mn = min(mn, c);
         return;
     }
-    if (start >=m)return;
-    if (count >= MIN)return;
-    for (auto & e:cover[start]){
-        if (day[e-1] == 0)now++;
-        day[e-1]++;
+    if (index== m||c>= mn) return;
+    
+    int newc = cnt;  
+    for (int day : s[index]) {
+        if (cv[day] == 0)
+            newc++;          
+        cv[day]++;
     }
-    my_recur(cover,day,target,now,start+1,MIN,count+1);
-    for (auto & e:cover[start]){
-        day[e-1]--;
-        if (day[e-1] == 0)now--;
+    fm(index+1, newc, c + 1);
+
+    for (int day : s[index]) {
+        cv[day]--;
+        if (cv[day] == 0)
+            newc--;
     }
-    my_recur(cover,day,target,now,start+1,MIN,count);
+    fm(index +1, cnt, c);
+
 }
 
-int main(){
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-    int day;
-    cin >> day >> m;
-    vector<vector<int>> v(m);
-    for (int i= 0;i< m;i++){
-        int idx;
-        cin >> idx;
-        vector<int> vp(idx);
-        for (int j = 0;j<idx;j++){
-            int t;
-            cin >> t;
-            vp[j] = t;
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cin >>n >> m;
+    s.resize(m);
+    cv.assign(n+1,0);
+
+    for (int i = 0; i < m; ++i) {
+        int k;
+        cin >>k;
+        s[i].resize(k);
+        for (int j= 0; j < k; ++j) {
+            cin >>s[i][j];
         }
-        v[i] = vp;
     }
-    vector<int> d(day);
-    int MIN = INT_MAX;
-    int now = 0;
-    my_recur(v,d,day,now,0,MIN,0);
-    cout << MIN;
+    fm(0,0, 0);
+    cout <<mn << "\n";
+    
     return 0;
 }
