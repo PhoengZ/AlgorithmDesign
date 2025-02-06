@@ -1,70 +1,63 @@
 #include <iostream>
 #include <vector>
-using namespace std;
+#include <climits>
 
-int f(int start, int stop, vector<int>&v, vector<int>&p){
+using namespace std;
+int f(vector<int>&v,vector<int>&p_1, vector<int>&p_2, int start, int stop){
     if (start == stop)return v[start];
-    int mid = start + (stop-start)/2;
-    int left = f(start,mid,v,p);
-    int right = f(mid+1,stop,v,p);
-    int max_l = p[mid] - p[start - 1];
-    bool neg = false;
-    bool first = true;
-    if (start %2 == 0){
-        neg = true;
-        max_l *= -1;
+    int mid = start + (stop - start)/2;
+    int left = f(v,p_1,p_2,start,mid);
+    int right = f(v,p_1,p_2,mid+1,stop);
+    int max_l_1,max_l_2,max_r_1,max_r_2;
+    if (start % 2 == 0){
+        max_l_2 = p_2[mid]-p_2[start-1];
+        max_l_1 = start >= mid ? 0: p_1[mid] - p_1[start];
+    }else{
+        max_l_1 = p_1[mid]-p_1[start-1];
+        max_l_2 = start >= mid ? 0: p_2[mid] - p_2[start];
     }
-    int max_r = 0;
-    if ((mid+1)%2 == 0)max_r = -1 * v[mid+1];
+    max_r_1 = p_1[mid+1] - p_1[mid];
+    max_r_2 = p_2[mid+1] - p_2[mid];
     for (int i = start;i<=mid;i++){
+        int m;
         if (i%2 == 0){
-            if (-1 * (p[mid] - p[i-1]) > max_l){
-                max_l = -1 * (p[mid] - p[i-1]);
-                neg = true;
-            }else{
-                max_l = max_l;
-            }
+            m = p_2[mid] - p_2[i-1];
+            max_l_2 = max(max_l_2,m);
         }else{
-            if (p[mid] -  p[i-1] > max_l){
-                neg =false;
-                max_l = p[mid] -  p[i-1];
-            }else{
-                max_l = max_l;
-            }
+            m = p_1[mid] - p_1[i-1];
+            max_l_1 = max(max_l_1,m);
         }
     }
     for (int i = mid+1;i<=stop;i++){
-        if (first){
-            if (neg) max_r = -1 * (p[i] - p[mid]);
-            else max_r = (p[i] - p[mid]);
-            first = false;
-        }else{
-            if (neg)max_r = max(max_r,-1 * (p[i] - p[mid]));
-            else max_r = max(max_r,(p[i] - p[mid]));
-        }
-        
+        int m,n;
+        m = p_2[i]-p_2[mid];
+        n = p_1[i] - p_1[mid];
+        max_r_1 = max(max_r_1,n);
+        max_r_2 = max(max_r_2,m);
     }
-    return max(max_l+max_r,max(left,right));
+    int real = max_r_1 + max_l_1 > max_r_2 + max_l_2 ?max_r_1 + max_l_1:max_r_2 + max_l_2;
+    return max(real,max(left,right));
 }
-
 
 int main(){
     int n;
     cin >> n;
-    vector<int>v(n+1);
-    vector<int>p(n+1);
-    int count_1 = 0;
-    for (int i = 1;i<=n;i++){
+    vector<int> v(n+1);
+    vector<int>p_1(n+1);
+    vector<int>p_2(n+1);
+    for (int i =1;i <= n;i++){
         cin >> v[i];
-        if (count_1 == 0){
-            p[i] = p[i-1] + v[i];
+        if (i%2 == 1){
+            p_1[i] = p_1[i-1] + v[i];
+            if (i > 1)p_2[i] = p_2[i-1] - v[i];
         }else{
-            p[i] = p[i-1] - v[i];
+            p_1[i] = p_1[i-1] - v[i];
+            p_2[i] = p_2[i-1] + v[i];
         }
-        count_1++;
-        count_1 = count_1%2;
+        
     }
-    int ans = f(1,n,v,p);
+
+    int ans = f(v,p_1,p_2,1,n);
     cout << ans;
     return 0;
 }
