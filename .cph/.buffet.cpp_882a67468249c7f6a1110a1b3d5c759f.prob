@@ -1,0 +1,1 @@
+{"name":"Local: buffet","url":"c:\\Users\\USER\\Desktop\\VScode\\AlgorithmDesign\\buffet.cpp","tests":[{"id":1739528937107,"input":"7 5 2\n4 6 2 7 3 5 9\n1 1\n1 6\n1 14\n4 7\n6 3","output":"1\n2\n6\n6\n6"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\USER\\Desktop\\VScode\\AlgorithmDesign\\buffet.cpp","group":"local","local":true}
