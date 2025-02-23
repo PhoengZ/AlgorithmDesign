@@ -13,12 +13,13 @@ int main(){
         cin>>v[i];
     }
     for (int i =0;i<m;i++){
-        int f;
-        cin >> f;
-        int count = 0,index = 0;
-        while (v[index] != f){
-            if (f < v[index])count++;
-            index++;
+        int k;
+        cin >> k;
+        int count = 0;
+        int idx = 0;
+        while (v[idx] != k){
+            if (v[idx] > k)count++;
+            idx++;
         }
         cout << count <<endl;
     }

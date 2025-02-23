@@ -1,54 +1,55 @@
 #include <iostream>
 #include <vector>
-
 using namespace std;
 
-void merge(vector<int> & v,int start, int stop, int mid, vector<int>&temp, int & count){
-    int ls = start;
-    int ms = mid+1;
-    int cou = 0;
+int s(int left, int right ,vector<int>&v, vector<int>&tmp){
+    int r,l;
+    int m = left + (right-left)/2;
+    l = left;
+    r = m + 1;
+    int c = 0;;
+    int count = 0;
     bool check = false;
-    for (int i = start;i<=stop;i++){
-        if (ls > mid){
-            temp[i] = v[ms];
-            ms++;
-        }else if (ms > stop){
-            count+=cou;
-            temp[i] = v[ls];
-            ls++;
+    for (int i = left;i<=right;i++){
+        if (l > m){
+            tmp[i] = v[r++];
+            continue;
+        }
+        if (r > right){
+            count+=c;
+            tmp[i] = v[l++];
+            continue;
+        }
+        if (v[l] > v[r]){
+            c++;
+            tmp[i] = v[r++];
         }else{
-            if (v[ls] <= v[ms]){
-                if (cou != 0)count+=cou;
-                temp[i] = v[ls];
-                ls++;
-            }else{
-                temp[i] = v[ms];
-                ms++;
-                cou++;
-            }
+            count+=c;
+            tmp[i] = v[l++];
         }
     }
-    for (int i = start;i<=stop;i++)v[i] = temp[i];
+    // if (check)count+=c;
+    for (int i = left;i<=right;i++)v[i] = tmp[i];
+    return count;
 }
 
-void merge_sort(vector<int> &v,int start, int stop, vector<int> &temp, int &count){
-    if(start < stop){
-        int mid = start + (stop - start)/2;
-        merge_sort(v,start,mid,temp,count);
-        merge_sort(v,mid+1,stop,temp,count);
-        merge(v,start,stop, mid, temp, count);
-    }
+int f(int left, int right ,vector<int>&v, vector<int>&tmp){
+    if (left < right){
+        int mid = left + (right-left)/2;
+        int l = f(left,mid,v,tmp);
+        int r = f(mid+1,right,v,tmp);
+        int solve = s(left,right,v,tmp);
+        return l+r+solve;
+    }else return 0;
 }
-
 
 int main(){
     int n;
-    cin>> n;
-    vector<int> vp(n);
-    int count = 0;
-    for (int i = 0;i<n;i++)cin >> vp[i];
-    vector<int> temp(n);
-    merge_sort(vp,0,n-1,temp,count);
-    cout << count;
+    cin >> n;
+    vector<int>v(n+1);
+    vector<int>tmp(n+1);
+    for (int i =1;i<=n;i++)cin >> v[i];
+    int answer = f(1,n,v,tmp);
+    cout << answer;
     return 0;
 }
