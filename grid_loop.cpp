@@ -12,7 +12,7 @@ int main(){
     vector<vector<int>>g(constant);
     vector<vector<int>>table(r,vector<int>(c));
     vector<bool>sel(constant);
-    vector<int>from(constant);
+    vector<int>dis(constant,-1);
     int node = 0;
     for(int i = 0;i<r;i++){
         int t = i == 0 ? 0:1;
@@ -24,7 +24,7 @@ int main(){
         for (int j = 0;j<c;j++){
             if (table[i][j] == 1){
                 if ( j-1 >= 0 && (table[i][j-1] == 1 || table[i][j-1] == 3 || table[i][j-1] == 4))g[node].push_back(node-1);
-                if ( j+1 < c && (table[i][j+1] == 1 || table[i][j+1] == 4 || table[i][j+1] == 5))g[node].push_back(node+1);
+                if ( j+1 < c && (table[i][j+1] == 1 || table[i][j+1] == 6 || table[i][j+1] == 5))g[node].push_back(node+1);
             }else if (table[i][j] == 2){
                 if ( node - c >= 0 && (table[i-1][j] == 2 || table[i-1][j] == 4 || table[i-1][j] == 5))g[node].push_back(node-c);
                 if (node + c < constant && (table[i+1][j] == 2 || table[i+1][j] == 3 || table[i+1][j] == 6))g[node].push_back(node+c);
@@ -46,47 +46,28 @@ int main(){
     }
     int total = 0;
     int answer = 1;
+    stack<pair<int,int>>s;
     for (int i =0;i<r*c;i++){
         if (sel[i])continue;
-        stack<int>s;
         sel[i] = true;
-        s.push(i);
-        bool check = false;
-        int start,end;
-        start = end = -1;
-        int old1,old2,old3;
-        old1,old2 = -1;
-        while(!s.empty() && !check){
-            int v = s.top();
+        dis[i] = 1;
+        s.push(make_pair(i,-1));
+        int count = -1;
+        while(!s.empty()){
+            pair<int,int> v = s.top();
             s.pop();
-            for(auto&e:g[v]){
-                if (sel[e] && from[v] != e){
-                    check = true;
-                    start = v;
-                    end = e;
-                    old1 = from[from[end]];
-                    old2 = from[end];
-                    from[from[end]] = end;
-                    from[end] = start;
-                    break;
+            for(auto&e:g[v.first]){
+                if (sel[e] && v.second != e){
+                    count = max(dis[v.first]+1,count);
                 }
                 if (!sel[e]){
-                    from[e] = v;
+                    dis[e] = dis[v.first] + 1;
                     sel[e] = true;
-                    s.push(e);
+                    s.push(make_pair(e,v.first));
                 }
             }
         }
-        int count = 1;
-        while (check && start != end){
-            count++;
-            start = from[start];
-        }
-        if (check){
-            total++;
-            from[old2] = old1;
-            from[end] = old2;
-        }
+        if (count!= -1)total++;
         answer=max(answer,count);
     }
     if (total == 0){
