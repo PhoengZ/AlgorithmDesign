@@ -1,0 +1,1 @@
+{"name":"Local: xor_road","url":"c:\\Users\\USER\\Desktop\\VScode\\AlgorithmDesign\\xor_road.cpp","tests":[{"id":1742220264740,"input":"4\n3\n10\n9\n6\n","output":"37"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\USER\\Desktop\\VScode\\AlgorithmDesign\\xor_road.cpp","group":"local","local":true}
