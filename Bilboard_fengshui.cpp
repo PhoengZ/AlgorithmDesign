@@ -6,7 +6,7 @@ bool check(int n, int k, vector<int>&sel, vector<int>&table,vector<int>&a,vector
     int idx = 1;
     if (n + v.size() - 1 > sel.size())return true;
     bool c = false;
-    for (int i = n;i<=n + v.size() - 1 && i < sel.size();i++){
+    for (int i = n;i<n + v.size() - 1 && idx < sel.size();i++){
         if (sel[i] != v[idx++])return true;
     }
     return false;
