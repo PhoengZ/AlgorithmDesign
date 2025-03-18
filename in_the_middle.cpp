@@ -7,16 +7,11 @@ using namespace std;
 int main(){
     int n;
     cin >> n;
-    queue<vector<int>>q;
     vector<int>t(3);
-    vector<int>m(3);
-    vector<vector<int>>g(n+1);
-    vector<bool>sel(n+1);
-    m[0] = m[2] = 1;
+    vector<vector<int>>g(n+1),dis(3,vector<int>(n+1));
+    vector<vector<bool>>sel(3,vector<bool>(n+1));
     for(int i = 0;i<3;i++){
         cin >> t[i];
-        q.push({t[i],0,i});
-        sel[t[i]] = true;
     }
     for (int i = 1;i<=n;i++){
         int a;
@@ -27,18 +22,30 @@ int main(){
             g[i].push_back(x);
         }
     }
-    while(!q.empty()){
-        vector<int>v = q.front();
-        q.pop();
-        for(auto & e:g[v[0]]){
-            if (!sel[e]){
-                m[v[2]]++;
-                sel[e] = true;
-                q.push({e,v[1]+1,v[2]});
+    queue<int>q;
+    for (int i = 0;i<3;i++){
+        q.push(t[i]);
+        sel[i][t[i]] = true;
+        while (!q.empty()){
+            int c = q.front();
+            q.pop();
+            for (auto & e:g[c]){
+                if(!sel[i][e]){
+                    sel[i][e] = true;
+                    dis[i][e] = dis[i][c]+1;
+                    q.push(e);
+                }
             }
         }
     }
-    int answer = max(m[0],max(m[1],m[2]));
+    int answer = 10000000;
+    for (int i = 1;i<=n;i++){
+        if (sel[0][i] && sel[1][i] && sel[2][i]){
+            int total = max(dis[0][i],max(dis[1][i],dis[2][i]));
+            answer = min(answer,total);
+        }
+    }
     cout << answer;
+    
     return 0;
 }
