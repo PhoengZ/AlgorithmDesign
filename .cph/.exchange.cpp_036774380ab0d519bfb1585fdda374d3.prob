@@ -1,0 +1,1 @@
+{"name":"Local: exchange","url":"c:\\Users\\USER\\Desktop\\VScode\\AlgorithmDesign\\exchange.cpp","tests":[{"id":1742340973560,"input":"2\n3\n1 0.7 1.2\n1.1 1 2\n0.75 0.7 1 \n2\n1 0.7\n1.2 1","output":"YES\nNO"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\USER\\Desktop\\VScode\\AlgorithmDesign\\exchange.cpp","group":"local","local":true}
