@@ -1,0 +1,1 @@
+{"name":"Local: hole","url":"c:\\Users\\USER\\Desktop\\VScode\\AlgorithmDesign\\hole.cpp","tests":[{"id":1742266339445,"input":"7 6 3\n6 2\n5 2\n4 3\n2 1\n7 3\n5 4\n6 4\n","output":"1"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\USER\\Desktop\\VScode\\AlgorithmDesign\\hole.cpp","group":"local","local":true}
