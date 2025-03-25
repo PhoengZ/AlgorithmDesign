@@ -1,26 +1,26 @@
 #include <iostream>
 #include <vector>
+#include <map>
 using namespace std;
 
 int main(){
     std::ios_base::sync_with_stdio(false); 
     std::cin.tie(0);
+    map<int,int>u;
     int n;
     cin >> n;
-    vector<vector<int>>g(n+1,vector<int>(n+1));
-    vector<int>ans(n);
-    for (int i = 1;i<=n;i++){
-        for (int j = 1;j<=n;j++)cin >> g[i][j];
-    }
-    for (int i = 1;i<=n;i++){
-        int count = 0;
-        for (int j = 1;j<=n;j++){
-            if (g[i][j] == 1)count++;
+    for (int i = 0;i<n;i++){
+        int total = 0;
+        for (int j = 0;j<n;j++){
+            int a;
+            cin >> a;
+            total+=a;
         }
-        ans[count]++;
+        u[total]++;
     }
-    int idx = n-1;
-    while (ans[idx] == 0 && idx >= 0)idx--;
-    for (int i = 0;i<=idx;i++)cout << ans[i] << " ";
+    auto it = --u.end();
+    for (int i = 0;i<=it->first;i++){
+        cout << u[i] << " ";
+    }
     return 0;
 }

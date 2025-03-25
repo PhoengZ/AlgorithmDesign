@@ -1,39 +1,38 @@
 #include <iostream>
 #include <vector>
-#include <stack>
-
+#include <queue>
 using namespace std;
 
 int main(){
     ios_base::sync_with_stdio(false); cin.tie(0);
     int v,e;
-    cin >> v >>e;
+    cin >> v >> e;
     vector<vector<int>>g(v+1);
     vector<bool>sel(v+1);
-    stack<int>s;
     for (int i = 0;i<e;i++){
         int a,b;
         cin >> a >> b;
         g[a].push_back(b);
         g[b].push_back(a);
-    }    
-    int count = 0;    
+    }
+    int total = 0;
     for (int i = 1;i<=v;i++){
         if (sel[i])continue;
-        count++;
+        queue<int>q;
+        q.push(i);
         sel[i] = true;
-        s.push(i);
-        while(!s.empty()){
-            int vertex = s.top();
-            s.pop();
-            for(auto &e:g[vertex]){
-                if (!sel[e]){
+        while(!q.empty()){
+            int t = q.front();
+            q.pop();
+            for (auto & e:g[t]){
+                if(!sel[e]){
                     sel[e] = true;
-                    s.push(e);
+                    q.push(e);
                 }
             }
         }
+        total++;
     }
-    cout << count;
+    cout <<total;
     return 0;
 }
