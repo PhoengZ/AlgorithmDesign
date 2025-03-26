@@ -7,47 +7,35 @@ int main(){
     std::ios_base::sync_with_stdio(false); std::cin.tie(0);
     int r,c;
     cin >> r >> c;
-    vector<vector<int>>g(r,vector<int>(c));
-    vector<vector<bool>>sel(r,vector<bool>(c));
-    vector<vector<int>>dis(r,vector<int>(c,10000000));
-    queue<pair<int,pair<int,int>>>s;
-    for (int i = 0;i<r;i++){
-        for(int j = 0;j<c;j++){
+    queue<pair<int,int>>q;
+    vector<vector<int>>g(r,vector<int>(c)),sel(r,vector<int>(c)),dis(r,vector<int>(c,1));
+    vector<vector<int>>d = {{1,0},{-1,0},{0,1},{0,-1}};
+    for (int i =0;i<r;i++){
+        for (int j = 0;j<c;j++){
             cin >> g[i][j];
             if (g[i][j] == 1){
-                s.push({1,{i,j}});
+                q.push({i,j});
+                sel[i][j] = true;
             }
+            if (g[i][j] == 3)sel[i][j] = true;
         }
     }
-    while (!s.empty()){
-        pair<int,pair<int,int>> p = s.front();
-        s.pop();
-        int a = p.second.first;
-        int b = p.second.second;
-        if (g[a][b] == 2){
-            cout << p.first;
-            break;
-        }
-        pair<int,pair<int,int>> del;
-        if (a+1 < r && g[a+1][b] != 3 && !sel[a+1][b]){
-            del = {p.first+1,{a+1,b}};
-            sel[a+1][b] = true;
-            s.push(del);
-        }
-        if (a-1 >= 0 && g[a-1][b] != 3 && !sel[a-1][b] && dis[a-1][b] > p.first+1){
-            del = {p.first+1,{a-1,b}};
-            sel[a-1][b] = true;
-            s.push(del);
-        }
-        if (b+1 < c && g[a][b+1] != 3 && !sel[a][b+1] && dis[a][b+1] > p.first+1){
-            del = {p.first+1,{a,b+1}};
-            sel[a][b+1] = true;
-            s.push(del);
-        }
-        if (b-1 >= 0 && g[a][b-1] != 3 && !sel[a][b-1] && dis[a][b-1] > p.first+1){
-            del = {p.first+1,{a,b-1}};
-            sel[a][b-1] = true;
-            s.push(del);
+    while(!q.empty()){
+        pair<int,int> p = q.front();
+        q.pop();
+        for (int i = 0;i<4;i++){
+            int a = p.first+d[i][0];
+            int b = p.second+d[i][1];
+            if (a < 0 || b < 0 || a >= r || b >= c)continue;
+            if (g[a][b] == 2){
+                cout << (dis[p.first][p.second]+1);
+                return 0;
+            }
+            if (!sel[a][b]){
+                sel[a][b] = true;
+                dis[a][b] = dis[p.first][p.second] + 1;
+                q.push({a,b});
+            }
         }
     }
     return 0;

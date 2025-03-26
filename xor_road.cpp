@@ -14,11 +14,13 @@ int main(){
     set<pair<int,int>,greater<>>s;
     s.insert({0,1});
     sel[1] = true;
+    unsigned long long answer = 0;
     while(!s.empty()){
         auto it = s.begin();
         pair<int,int>p = *it;
         sel[p.second] = true;
         s.erase(it);
+        answer+=p.first;
         for (int i = 1;i<=n;i++){
             if (i == p.second)continue;
             unsigned long long val = g[p.second] ^ g[i];
@@ -28,10 +30,6 @@ int main(){
                 s.insert({b[i],i});
             }
         }
-    }
-    unsigned long long answer = 0;
-    for (int i =1;i<=n;i++){
-        answer+=b[i];
     }
     cout << answer;
     return 0;
