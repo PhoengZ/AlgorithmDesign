@@ -4,18 +4,24 @@
 
 using namespace std;
 
-int fr(int u, vector<int>&parent){
+pair<int,int> fr(int u, vector<int>&parent){
+    int count = 0;
     while(parent[u] != -1){
         u = parent[u];
+        count++;
     }
-    return u;
+    return {u,count};
 }
 
 bool j(int u, int v, vector<int>&parent){
-    int a = fr(u,parent);
-    int b = fr(v,parent);
-    if (a != b){
-        parent[a] = b;
+    pair<int,int> a = fr(u,parent);
+    pair<int,int> b = fr(v,parent);
+    if (a.first != b.first){
+        if (a.second > b.second){
+            parent[b.first] = a.first;
+        }else{
+            parent[a.first] = b.first;
+        }
         return true;
     }else{
         return false;

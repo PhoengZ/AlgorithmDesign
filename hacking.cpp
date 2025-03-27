@@ -23,7 +23,6 @@ int main(){
     for (int i = 0;i<k;i++){
         s.insert({w[t[i]],t[i]});
         dis[t[i]] = w[t[i]];
-        answer = max(answer,dis[t[i]]);
     }
     while(!s.empty()){
         auto it = s.begin();
