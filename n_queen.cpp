@@ -15,15 +15,16 @@ bool c(vector<int>&sol, int t){
 
 int f(vector<int>&sol, vector<bool>&sel, int target, int now ){
     if (now == target){
-        if (c(sol,target))return 1;
-        return 0;
+        return 1;
     }
     int ans = 0;
     for (int i = 0;i<target;i++){
         if (!sel[i]){
             sel[i] = true;
             sol[now] = i;
-            ans+= f(sol,sel,target,now+1);
+            if (c(sol,now+1)){
+                ans+= f(sol,sel,target,now+1);
+            }
             sel[i] = false;
             sol[now] = -1;
         }
