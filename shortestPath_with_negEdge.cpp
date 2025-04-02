@@ -3,39 +3,33 @@
 using namespace std;
 
 int main(){
+    ios_base::sync_with_stdio(false); cin.tie(0);
     int n,e,s;
-    cin >> n >> e >>s;
-    vector<vector<int>>g(n);
-    vector<vector<int>>weight(n,vector<int>(n));
-    vector<pair<int,int>>edge(e);
+    cin >> n >> e >> s;
+    vector<vector<int>>w(n,vector<int>(n)),g;
+    vector<int>sol(n,1000000000);
     for (int i = 0;i<e;i++){
         int a,b,c;
         cin >> a >> b >> c;
-        weight[a][b] = c;
-        g[a].push_back(b);
-        edge[i] = {a,b};
+        g.push_back({a,b});
+        w[a][b] = c;
     }
-    vector<int>sol(n,1000000);
     sol[s] = 0;
-    for (int i = 1;i<n;i++){
-        for (auto & e:edge){
-            sol[e.second] = min(sol[e.first] + weight[e.first][e.second],sol[e.second]);
+    for (int i = 0;i<n;i++){
+        for (auto &e:g){
+            sol[e[1]] = min(sol[e[1]], sol[e[0]] + w[e[0]][e[1]]);
         }
     }
-    bool check = false;
-    for (auto & e:edge){
-        if (sol[e.second] > sol[e.first] + weight[e.first][e.second]){
-            check = true;
+    bool check = true;
+    for (auto &e:g){
+        if (sol[e[1]] > sol[e[0]] + w[e[0]][e[1]]){
+            check = false;
             break;
         }
     }
-    if (check){
-        cout << -1;
-    }else{
-        for (int i = 0;i<n;i++){
-            cout << sol[i] << " ";
-        }
+    if (!check)cout << -1;
+    else {
+        for (int i =0;i<n;i++)cout << sol[i] << " ";
     }
-    
     return 0;
 }

@@ -3,26 +3,25 @@
 using namespace std;
 
 int main(){
+    ios_base::sync_with_stdio(false); cin.tie(0);
     int n,e;
     cin >> n >> e;
     vector<vector<int>>g(n+1);
-    vector<int>s(n+1);
+    vector<int>c(n+1);
     for (int i = 0;i<e;i++){
         int a,b;
         cin >> a >> b;
+        c[b]++;
         g[a].push_back(b);
-        s[b]++;
     }
-    for (int i = 1;i<=5;i++){
+    for (int i = 0;i<5;i++){
+        vector<int>c1 = c;
         bool check = true;
-        vector<int>t = s;
-        for (int j = 1;j<=n;j++){
-            int x;
-            cin >> x;
-            if (t[x] != 0)check = false;
-            for (int k = 0;k<g[x].size();k++){
-                t[g[x][k]]--;
-            }
+        for (int j=0;j<n;j++){
+            int a;
+            cin >> a;
+            if (c1[a] != 0)check = false;                
+            for (auto &e:g[a])c1[e]--;
         }
         if (check)cout << "SUCCESS" << endl;
         else cout << "FAIL" << endl;

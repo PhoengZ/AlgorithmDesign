@@ -1,39 +1,35 @@
 #include <iostream>
 #include <vector>
-#include <set>
 using namespace std;
 
 int main(){
+    ios_base::sync_with_stdio(false); cin.tie(0);
     int n,m;
-    cin >> n >> m;
-    vector<vector<int>>g(n),w(n,vector<int>(n,10000000));
-    for (int i =0;i<m;i++){
+    cin >> n >> m;    
+    vector<vector<int>>g(n,vector<int>(n,1000000000));
+    for (int i = 0;i<m;i++){
         int a,b,c;
         cin >> a >> b >> c;
-        g[a].push_back(b);
-        g[b].push_back(a);
-        w[a][b] = w[b][a] = c;
+        g[a][b] = g[b][a] = c;
     }
-    vector<vector<int>>sol(n,vector<int>(n));
-    for (int i  =0;i<n;i++){
-        for (int j = 0;j<n;j++){
-            if (i == j)sol[i][j] = 0;
-            else sol[i][j] = w[i][j];
-        }
+    for (int i = 0;i<n;i++){
+        g[i][i] = 0;
     }
     for (int k = 0;k<n;k++){
-        for (int i  =0;i<n;i++){
-            for (int j = 0;j<n;j++){
-                sol[i][j] = min(sol[i][j],sol[i][k] + sol[k][j]);
+        for (int i = 0;i<n;i++){
+            for (int  j = 0;j<n;j++){
+                g[i][j] = min(g[i][j],g[i][k] + g[k][j]);
             }
         }
     }
-    int answer = 0;
-    for (int i =0;i<n;i++){
+    int sol = 0;
+    for (int i = 0;i<n;i++){
         for (int j =0;j<n;j++){
-            answer = max(answer,sol[i][j]);
+            if (g[i][j] != 1000000000){
+                sol = max(sol,g[i][j]);
+            }
         }
     }
-    cout << answer;
+    cout << sol;
     return 0;
 }

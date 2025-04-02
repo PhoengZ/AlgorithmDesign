@@ -8,39 +8,36 @@ int main(){
     int n;
     cin >> n;
     vector<vector<int>>g(n);
-    vector<int>c(n),sel(n);
+    vector<int>c(n),ans(n);
+    vector<bool>s(n);
     queue<int>q;
     for (int i = 0;i<n;i++){
         int a;
         cin >> a;
-        c[i]=a;
+        c[i] = a;
         if (a == 0){
             q.push(i);
-            sel[i] = true;
+            s[i] = true;
         }
-        for (int j =0;j<a;j++){
+        for (int j = 0;j<a;j++){
             int b;
             cin >> b;
             g[b].push_back(i);
         }
     }
-    vector<int>sol(n);
-    int idx = 0;
+    int i = 0;
     while(!q.empty()){
-        int t = q.front();
-        q.pop();
-        sol[idx++] = t;
-        for (auto &e:g[t]){
-            if (!sel[e]){
-                c[e]--;
-                if (c[e] == 0){
-                    q.push(e);
-                    sel[e] = true;
-                }
-
+        int f = q.front();q.pop();
+        ans[i++] = f;
+        for (auto & e:g[f]){
+            if (s[e])continue;
+            c[e]--;
+            if (c[e] == 0){
+                s[e] = true;
+                q.push(e);
             }
         }
     }
-    for (auto & e:sol)cout << e << " ";
+    for (auto & e:ans)cout << e << " ";
     return 0;
 }
