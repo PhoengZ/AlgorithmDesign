@@ -1,15 +1,34 @@
 #include <iostream>
 #include <vector>
-#include <queue>
 #include <climits>
 
 using namespace std;
 
+int target;
+int mpath = 0;
+
+
+
+void f(int hap, int node, vector<vector<int>>&w, vector<vector<int>>&g, vector<bool>&v, int c, int& ans){
+    if (c == 0){
+        ans = max(hap,ans);
+        return ;
+    }
+    if (mpath*c + hap < ans)return;
+    if (node == target)return ;
+    for (auto & e:g[node]){
+        if (!v[e]){
+            v[e] = true;
+            f(hap+w[node][e],e,w,g,v,c-1,ans);
+            v[e] =false;
+        }
+    }
+}
+
 int main(){
     int n;
     cin >> n;
-    int target = n-1;
-    int mpath = 0;
+    target = n-1;
     vector<vector<int>>w(n,vector<int>(n)),g(n);
     vector<bool>s(n);
     s[0] = true;
@@ -20,32 +39,8 @@ int main(){
             mpath = max(mpath,w[i][j]);
         }
     }
-    priority_queue<pair<int,pair<int,vector<bool>>>>p;
-    p.push(make_pair(0,make_pair(0,s)));
     int ans = 0;
-    while(!p.empty()){
-        auto t = p.top();
-        p.pop();
-        int count = 0;
-        for (int i =0;i<n;i++){
-            if (!t.second.second[i])count++;
-        }
-        if (t.second.first == target && count == 0){
-            cout << t.first;
-            return 0;
-        }
-        if (t.second.first == target && count >= 1){
-            continue;
-        }
-        if (t.first + count*mpath < ans)continue;
-        for (auto & e:g[t.second.first]){
-            if (!t.second.second[e]){
-                t.second.second[e] = true;
-                p.push(make_pair(t.first + w[t.second.first][e],make_pair(e,t.second.second)));
-                t.second.second[e] = false;
-            }
-        }
-    }
+    f(0,0,w,g,s,n-1,ans);
     cout << ans;
     return 0;
 }
