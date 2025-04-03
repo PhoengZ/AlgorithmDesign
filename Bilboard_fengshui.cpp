@@ -2,48 +2,54 @@
 #include <vector>
 using namespace std;
 
-bool check(int n, int k, vector<int>&sel, vector<int>&table,vector<int>&a,vector<int>&v){
-    int idx = 1;
-    if (n + v.size() - 1 > sel.size())return true;
-    bool c = false;
-    for (int i = n;i<n + v.size() - 1 && idx < sel.size();i++){
-        if (sel[i] != v[idx++])return true;
+int target;
+
+bool c(vector<bool>&sel, vector<int>&p, int now){
+    int s = p.size();
+    for (int i = 0;i<=now - s;i++){
+        int idx = 0;
+        bool check =true;
+        for (int j = i;j<p.size()+i;j++){
+            if (sel[j] != p[idx++]){
+                check =false;
+                break;
+            }
+        }
+        if (check)return false;
     }
-    return false;
+    return true;
 }
 
-int f(int n, int k, vector<int>&sel, vector<int>&table,vector<int>&a,vector<int>&v){
-    if (n <= 0){
-        if (check(1,k,sel,table,a,v))return 0;
-        return -10000000;
+void f(vector<int>&v, vector<int>&p, vector<int>&p0, vector<bool>&sel,int now, int total, int &ans, bool state){
+    if (now == target){
+        if (c(sel,p,now))ans = max(ans,total);
+        return;
     }
-    if (n == 1){
-        sel[n] = 1;
-        if (check(n,k,sel,table,a,v)){sel[n] = 0;return a[n];}
-        else{sel[n] = 0;return 0;}
+    if (!c(sel,p,now))return ;
+    if (p0.back() - p0[now] + total < ans)return ;
+    if (!state){
+        sel[now] = true;
+        f(v,p,p0,sel,now+1,total+v[now],ans,true);
+        sel[now] = false;
     }
-    sel[n] = 1;
-    int total = 0;
-    if (check(n,k,sel,table,a,v)){
-        total = f(n-2,k,sel,table,a,v) + a[n];
-    }
-    sel[n] = 0;
-    if (check(n,k,sel,table,a,v)){
-        total = max(f(n-1,k,sel,table,a,v),total);
-    }
-    return total;
+    f(v,p,p0,sel,now+1,total,ans,false);
+
 }
 
 int main(){
     int n,k;
     cin >> n >> k;
-    vector<int>table(n+1);
-    vector<int>a(n+1);
-    vector<int>v(k+1);
-    vector<int>s(n+1);
-    for (int i = 1;i<=n;i++)cin >> a[i];
-    for (int i = 1;i<=k;i++)cin >> v[i];
-    int answer = f(n,k,s,table,a,v);
-    cout << answer;
+    target = n;
+    vector<int>v(n),p0(n+1);
+    vector<int>p(k);
+    vector<bool>sel(n);
+    for (int i = 0;i<n;i++){
+        cin >> v[i];
+        p0[i+1]+=p0[i]+v[i];
+    }
+    for(int i = 0;i<k;i++)cin >> p[i];
+    int ans = 0;
+    f(v,p,p0,sel,0,0,ans,false);
+    cout << ans;
     return 0;
 }
