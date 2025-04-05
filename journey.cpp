@@ -8,39 +8,20 @@ using namespace std;
 int target;
 int mpath = 0;
 
-int upper(int node, vector<bool>&v, vector<vector<int>>&w,int c,vector<int>&t){
-    int bound = 0;
-    // Sum of maximum outgoing edges from remaining unvisited cities
-    for (int i = 0; i <= target-1; i++) {
-        if (!v[i] || i == node) {
-            bound += t[i];
-        }
-    }
-    // Add maximum edge from last city to target (city N-1)
-    if (c > 1) {
-        int last_city_max = 0;
-        for (int i = 0; i <= target; i++) {
-            if (!v[i] && i != node) {
-                last_city_max =max(w[i][target],last_city_max);
-            }
-        }
-        bound += last_city_max;
-    }
-    return bound;
-}
 
-
-void f(int hap, int node, vector<vector<int>>&w, vector<vector<int>>&g, vector<bool>&v, int c, int& ans,vector<int>&t){
-    if (c == 0){
+void f(int hap, int node, vector<vector<int>>&w, vector<vector<int>>&g, vector<bool>&v, int c, int& ans,vector<int>&t, int up){
+    if (c == 1){
+        hap+=w[node][target];
         ans = max(hap,ans);
         return ;
     }
-    if (upper(node,v,w,c,t) + hap <= ans)return;
+    if (mpath*c + hap <= ans)return ;
+    if (up + hap <= ans)return;
     if (node == target)return ;
     for (auto & e:g[node]){
-        if (!v[e]){
+        if (!v[e] && e != target){
             v[e] = true;
-            f(hap+w[node][e],e,w,g,v,c-1,ans,t);
+            f(hap+w[node][e],e,w,g,v,c-1,ans,t,up-t[node]);
             v[e] =false;
         }
     }
@@ -65,13 +46,11 @@ int main(){
             mpath = max(mpath,w[i][j]);
         }
     }
-    // for (int i = 0;i<n;i++){
-    //     cout << t[i] << " ";
-    // }
-    // cout << endl;
+    int up = 0;
+    for (int i = 0;i<n-1;i++)up+=t[i];
     int ans = -100000000;
     s[0] = true;
-    f(0,0,w,g,s,n-1,ans,t);
+    f(0,0,w,g,s,n-1,ans,t,up);
     cout << ans;
     return 0;
 }
