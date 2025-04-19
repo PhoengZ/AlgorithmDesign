@@ -19,6 +19,7 @@ int main(){
     for (int i = 0;i<n;i++)cin >> w[i];
     for (int i = 0;i<n;i++){
         x[i].first =  double(v[i])/w[i];
+        cout << x[i].first << " ";
         x[i].second.first = v[i];
         x[i].second.second = w[i];
     }
@@ -33,6 +34,6 @@ int main(){
             break;
         }
     }
-    cout << fixed << setprecision(4) << value;
+    // cout << fixed << setprecision(4) << value;
     return 0;
 }
