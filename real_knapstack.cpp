@@ -5,73 +5,90 @@
 #include <queue>
 using namespace std;
 
-class item{
-    public:
-        double weight;
-        double value;
-        int n;
-        item(double w, double v, int n){
-            weight = w;
-            value = v;
-            this->n = n;
-        }
-};
-class compareable{
-    public:
-        bool operator()(const item& i, const item&j){
-            return i.value < j.value;
-        }
+class item {
+public:
+    double weight;   // น้ำหนักที่เหลือ
+    double value;    // ค่าที่เก็บมาแล้ว
+    int idx;         // index ของ item ปัจจุบัน (เริ่มจาก n, นับถอยหลัง)
+    double priority; // value + heuristic
+
+    item(double w, double v, int i, double p) : weight(w), value(v), idx(i), priority(p) {}
 };
 
-double u(vector<vector<double>>&ratio, int idx, double w, double total){
-    double t = total;
-    double we = w;
-    for (int i = idx;i>0;i--){
-        if (we -ratio[i][2] >= 0){
-            we-=ratio[i][2];
-            t+=ratio[i][1];
-        }else{
-            t+=(ratio[i][0]*we);
+class Compare {
+public:
+    bool operator()(const item& a, const item& b) {
+        return a.priority < b.priority;
+    }
+};
+
+// heuristic function (คำนวณ upper bound)
+double heuristic(const vector<vector<double>>& items, int idx, double weight, double value) {
+    double total = value;
+    double w = weight;
+    for (int i = idx; i > 0; i--) {
+        if (w >= items[i][2]) {
+            w -= items[i][2];
+            total += items[i][1];
+        } else {
+            total += items[i][0] * w;
             break;
         }
     }
-    return t;
+    return total;
 }
 
-
-int main(){
+int main() {
     int n;
-    double w;
-    cin >> w >> n;
-    vector<vector<double>>v(n+1,vector<double>(3));
-    for (int i = 1;i<=n;i++){
-        cin >> v[i][1];
+    double W;
+    cin >> W >> n;
+
+    vector<vector<double>> items(n + 1, vector<double>(3)); // [0] = ratio, [1] = value, [2] = weight
+    for (int i = 1; i <= n; i++) {
+        cin >> items[i][1]; // value
     }
-    for (int i = 1;i<=n;i++){
-        cin >> v[i][2];
-        v[i][0] = v[i][1]/v[i][2];
+    for (int i = 1; i <= n; i++) {
+        cin >> items[i][2]; // weight
+        items[i][0] = items[i][1] / items[i][2]; // value/weight
     }
-    sort(v.begin(),v.end());
-    priority_queue<item,vector<item>,compareable>pq;
-    item i(w,0,n);
-    pq.push(i);
+
+    sort(items.begin() + 1, items.end());
+
+    priority_queue<item, vector<item>, Compare> pq;
+    double init_heuristic = heuristic(items, n, W, 0);
+    pq.emplace(W, 0, n, init_heuristic);
+
     double answer = 0;
-    while(!pq.empty()){
-        item p = pq.top();
+
+    while (!pq.empty()) {
+        item current = pq.top();
         pq.pop();
-        if (p.weight < 0)continue;
-        if (p.n == 0){
-            answer = max(p.value,answer);
-            continue;
+
+        if (current.weight < 0) continue;
+
+        if (current.idx == 0) {
+            answer = max(answer, current.value);
+            break;
         }
-        if (u(v,p.n,p.weight,p.value) <= answer)continue;
-        if (p.weight - v[p.n][2] >= 0){
-            item t1(p.weight-v[p.n][2],p.value+v[p.n][1],p.n-1);
-            pq.push(t1);
+
+        if (current.priority <= answer) continue;
+
+        int i = current.idx;
+
+        if (current.weight >= items[i][2]) {
+            double new_w = current.weight - items[i][2];
+            double new_val = current.value + items[i][1];
+            double new_priority = heuristic(items, i - 1, new_w, new_val);
+            if (new_val > answer){
+                answer = new_val;
+            }
+            pq.emplace(new_w, new_val, i - 1, new_priority);
         }
-        item t1(p.weight,p.value,p.n-1);
-        pq.push(t1);
+
+        double new_priority = heuristic(items, i - 1, current.weight, current.value);
+        pq.emplace(current.weight, current.value, i - 1, new_priority);
     }
-    cout << fixed <<setprecision(4) <<answer;
+
+    cout << fixed << setprecision(4) << answer << endl;
     return 0;
 }

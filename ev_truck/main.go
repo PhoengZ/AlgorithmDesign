@@ -20,10 +20,13 @@ func main() {
 	var n, m int
 	fmt.Scanf("%d %d", &n, &m)
 	g := make([][]int, n)
-	for i := 0; i < n; i++ {
+	for i := range g {
 		g[i] = make([]int, n)
+	}
+	bound := 1001 * n
+	for i := 0; i < n; i++ {
 		for j := 0; j < n; j++ {
-			g[i][j] = 1000000000
+			g[i][j] = bound
 		}
 	}
 	for i := 0; i < n; i++ {
@@ -45,7 +48,7 @@ func main() {
 	sol := 0
 	for i := 0; i < n; i++ {
 		for j := 0; j < n; j++ {
-			if g[i][j] != 1000000000 {
+			if g[i][j] != bound {
 				sol = max(sol, g[i][j])
 			}
 		}

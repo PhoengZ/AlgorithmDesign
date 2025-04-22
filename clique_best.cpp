@@ -8,17 +8,19 @@ class item{
         vector<int>sel;
         int total;
         int now;
-        item(vector<int> sel,int total, int now){
+        int bound;
+        item(vector<int> sel,int total, int now,int bound){
             this->total = total;
             this->now = now;
             this->sel = sel;
+            this->bound = bound;
         }
 };
 
 class comparable{
     public:
         bool operator()(const item & i,const item &j){
-            return i.total < j.total;
+            return i.bound + i.total < j.bound + j.total;
         }
 };
 
@@ -57,23 +59,22 @@ int main(){
     }
     priority_queue<item,vector<item>,comparable>pq;
     vector<int>sel;
-    item i(sel,0,0);
+    item i(sel,0,0,t);
     pq.push(i);
     while(!pq.empty()){
         item p = pq.top();
         pq.pop();
-        if (c(p.sel,b,p.now,t) + p.total <= answer)continue;
         if (p.now == n){
             answer = max(answer,p.total);
-            continue;
+            break;
         }
         if (check(p.sel,p.now,g)){
             p.sel.push_back(p.now);
-            item i(p.sel,p.total + b[p.now],p.now+1);
+            item i(p.sel,p.total + b[p.now],p.now+1,p.bound-b[p.now]);
             p.sel.pop_back();
             pq.push(i);
         }
-        item i(p.sel,p.total,p.now+1);
+        item i(p.sel,p.total,p.now+1,p.bound-b[p.now]);
         pq.push(i);
     }
     cout << answer;
