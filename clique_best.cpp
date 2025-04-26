@@ -5,11 +5,11 @@ using namespace std;
 
 class item{
     public:
-        vector<int>sel;
+        string sel;
         int total;
         int now;
         int bound;
-        item(vector<int> sel,int total, int now,int bound){
+        item(string sel,int total, int now,int bound){
             this->total = total;
             this->now = now;
             this->sel = sel;
@@ -24,16 +24,18 @@ class comparable{
         }
 };
 
-bool check(vector<int>&sel, int idx ,vector<vector<int>>&g){
-    for (auto & e:sel){
-        if (!g[idx][e] || !g[e][idx])return false;
+bool check(string &sel, int idx ,vector<vector<int>>&g){
+    for (int i = 0;i<sel.length();i++){
+        int s = sel[i] - '0'; 
+        if (!g[s][idx] || !g[idx][s])return false;
     }
     return true;
 }
 
-int c(vector<int>&sel, vector<int>&b, int now, int t){
+int c(string&sel, vector<int>&b, int now, int t){
     int total = 0;
-    for (auto &e:sel){
+    for (int i = 0;i<sel.length();i++){
+        int e = sel[i] - '0'; 
         total+=b[e];
     }
     return t-total;
@@ -58,20 +60,21 @@ int main(){
         }
     }
     priority_queue<item,vector<item>,comparable>pq;
-    vector<int>sel;
+    string sel = "";
     item i(sel,0,0,t);
     pq.push(i);
     while(!pq.empty()){
         item p = pq.top();
         pq.pop();
+        if (p.bound + p.total < answer)continue;
         if (p.now == n){
             answer = max(answer,p.total);
             break;
         }
         if (check(p.sel,p.now,g)){
-            p.sel.push_back(p.now);
-            item i(p.sel,p.total + b[p.now],p.now+1,p.bound-b[p.now]);
-            p.sel.pop_back();
+            char c = p.now + '0';
+            string s = p.sel+c;
+            item i(s,p.total + b[p.now],p.now+1,p.bound-b[p.now]);
             pq.push(i);
         }
         item i(p.sel,p.total,p.now+1,p.bound-b[p.now]);
